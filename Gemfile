@@ -162,6 +162,7 @@ group :development, :test do
   gem 'quiet_assets'
   gem 'syntax'
   gem 'annotate'
+  gem 'rspec-rails'
 end
 
 group :test do
@@ -171,11 +172,11 @@ group :test do
   gem 'database_cleaner'
   gem 'fuubar' , '2.0.0.rc1'
   gem 'resque_spec'
-  gem 'rspec-rails'
   gem 'simplecov'
   gem 'timecop'
   gem 'vcr'
   gem 'webmock', '<1.16'
+  gem 'shoulda-matchers'
 end
 
 group :production do
