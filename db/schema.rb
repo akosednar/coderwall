@@ -122,19 +122,6 @@ ActiveRecord::Schema.define(:version => 20140719160422) do
   add_index "follows", ["followable_id", "followable_type"], :name => "fk_followables"
   add_index "follows", ["follower_id", "follower_type"], :name => "fk_follows"
 
-  create_table "github_assignments", :force => true do |t|
-    t.string   "github_username"
-    t.string   "repo_url"
-    t.string   "tag"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "badge_class_name"
-  end
-
-  add_index "github_assignments", ["github_username", "badge_class_name"], :name => "index_assignments_on_username_and_badge_class_name", :unique => true
-  add_index "github_assignments", ["github_username", "repo_url", "tag"], :name => "index_assignments_on_username_and_repo_url_and_badge_class_name", :unique => true
-  add_index "github_assignments", ["repo_url"], :name => "index_assignments_on_repo_url"
-
   create_table "highlights", :force => true do |t|
     t.integer  "user_id"
     t.text     "description"
