@@ -1,4 +1,4 @@
-class BansController < BaseAdminController
+class Admin::BansController < AdminController
 
   def create
     ban_params = params.permit(:user_id)
