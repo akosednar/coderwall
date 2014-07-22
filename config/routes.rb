@@ -310,7 +310,7 @@ Coderwall::Application.routes.draw do
 
   get '/comments' => 'comments#index', as: :latest_comments
   get '/jobs(/:location(/:skill))' => 'opportunities#index', as: :jobs
-  get '/jobs-map' => 'opportunities#map', as: :jobs_map
+  get '/jobs-map' => 'opportunities#map', as: :hackernews
 
   mount Split::Dashboard, at: 'split'
 
@@ -364,10 +364,6 @@ Coderwall::Application.routes.draw do
       post '/update-tags' => 'networks#update_tags', as: :update_tags
       get '/current-mayor' => 'networks#current_mayor', as: :current_mayor
     end
-  end
-
-  resources :processing_queues, :path => '/q' do
-    member { post '/dequeue/:item' => 'processing_queues#dequeue', as: :dequeue }
   end
 
   get 'trending' => 'protips#index', as: :protips
@@ -461,8 +457,6 @@ Coderwall::Application.routes.draw do
     resources :endorsements
     resources :pictures
     resources :follows
-    resources :bans,    only: [:create]
-    resources :unbans,  only: [:create]
   end
 
   get '/clear/:id/:provider' => 'users#clear_provider', as: :clear_provider
@@ -483,18 +477,24 @@ Coderwall::Application.routes.draw do
   get '/roll-the-dice' => 'users#randomize', as: :random_wall
 
   require_admin = ->(params, req) { User.find_by(id: req.session[:current_user], admin: true).exist? }
+  scope :constraints => require_admin do
+  	  resources :processing_queues, :path => '/q' do
+        member { post '/dequeue/:item' => 'processing_queues#dequeue', as: :dequeue }
+      end
 
-  scope :admin, as: :admin, :path => '/admin', :constraints => require_admin do
-    get '/' => 'admin#index', as: :root
-    get '/failed_jobs' => 'admin#failed_jobs'
-    get '/teams' => 'admin#teams', as: :teams
-    get '/teams/sections/:num_sections' => 'admin#sections_teams', as: :sections_teams
-    get '/teams/section/:section' => 'admin#section_teams', as: :section_teams
+	  namespace :admin do
+	    get '/' => 'home#index', as: :root
+	    get '/failed_jobs' => 'home#failed_jobs'
+	    get '/teams' => 'home#teams', as: :teams
+	    get '/teams/sections/:num_sections' => 'home#sections_teams', as: :sections_teams
+	    get '/teams/section/:section' => 'home#section_teams', as: :section_teams
+	    resources :bans,    only: [:create]
+	    resources :unbans,  only: [:create]
 
-    require 'sidekiq/web'
-    mount Sidekiq::Web => '/sidekiq'
+	    require 'sidekiq/web'
+	    mount Sidekiq::Web => '/sidekiq'
+	  end
   end
-
 
   get '/:username' => 'users#show', as: :badge
   get '/:username/achievements/:id' => 'achievements#show', as: :user_achievement

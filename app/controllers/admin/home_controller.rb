@@ -1,6 +1,7 @@
-class AdminController < BaseAdminController
+class Admin::HomeController < AdminController
 
   def index
+
   end
 
   def failed_jobs

@@ -1,4 +1,4 @@
-class ProcessingQueuesController < BaseAdminController
+class ProcessingQueuesController < AdminController
   before_filter :lookup_queue, only: [:show, :dequeue]
 
   def index
